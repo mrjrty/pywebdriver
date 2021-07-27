@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+USERNAME=pywebdriver
+echo "Configure $SERVICE user and group"
+if id -u $USERNAME &>/dev/null; then
+    echo "$USERNAME already exists"
+else
+    adduser --quiet --no-create-home --system $USERNAME --quiet
+    groupadd -f usbusers
+    adduser $USERNAME usbusers --quiet
+    adduser $USERNAME dialout --quiet
+    adduser $USERNAME ssl-cert --quiet
+fi
+
+echo "Restarting udev"
+service udev restart
+
+#DEBHELPER#
